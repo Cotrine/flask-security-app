@@ -1,0 +1,34 @@
+server {
+    listen 80;
+    server_name <TU_IP_PUBLICA_EC2_O_DOMINIO>;
+
+    # Tamaño máximo de carga
+    client_max_body_size 10M;
+
+    # Registro de accesos y errores
+    access_log /var/log/nginx/flask_security_access.log;
+    error_log /var/log/nginx/flask_security_error.log;
+
+    # Servir archivos estáticos directamente desde Nginx para mayor velocidad
+    location /static/ {
+        alias /home/ubuntu/flask-security-app/app/static/;
+        expires 30d;
+        add_header Cache-Control "public, no-transform";
+    }
+
+    # Proxy inverso hacia el socket Unix de Gunicorn
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/home/ubuntu/flask-security-app/app.sock;
+
+        # Cabeceras de seguridad y preservación de IP real
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        # Timeouts de proxy
+        proxy_connect_timeout 60s;
+        proxy_read_timeout 60s;
+    }
+}

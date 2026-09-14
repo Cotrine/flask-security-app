@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Iniciar Sesión - Seguridad Informática{% endblock %}
+
+{% block content %}
+<div class="card auth-card">
+  <div style="text-align: center; margin-bottom: 1.5rem;">
+    <h1 style="font-size: 1.5rem; font-weight: 700; color: #fff;">Iniciar Sesión</h1>
+    <p style="color: #94a3b8; font-size: 0.85rem; margin-top: 0.25rem;">
+      Ingresa tu correo y contraseña registrados
+    </p>
+  </div>
+
+  <form method="POST" action="{{ url_for('auth.login') }}" novalidate>
+    {# Token CSRF obligatorio inyectado por Flask-WTF #}
+    {{ form.hidden_tag() }}
+
+    <div class="form-group">
+      {{ form.email.label(class="form-label") }}
+      {{ form.email(class="form-input", placeholder="usuario@dominio.com") }}
+      {% for error in form.email.errors %}
+        <div class="field-error">{{ error }}</div>
+      {% endfor %}
+    </div>
+
+    <div class="form-group">
+      {{ form.password.label(class="form-label") }}
+      {{ form.password(class="form-input", placeholder="••••••••") }}
+      {% for error in form.password.errors %}
+        <div class="field-error">{{ error }}</div>
+      {% endfor %}
+    </div>
+
+    <div style="margin-top: 1.5rem;">
+      {{ form.submit(class="btn btn-primary") }}
+    </div>
+  </form>
+
+  <div style="text-align: center; margin-top: 1.5rem; border-top: 1px solid #334155; padding-top: 1rem; font-size: 0.85rem; color: #94a3b8;">
+    ¿No tienes una cuenta? <a href="{{ url_for('auth.register') }}" style="color: #3b82f6; text-decoration: none;">Regístrate aquí</a>
+  </div>
+</div>
+{% endblock %}

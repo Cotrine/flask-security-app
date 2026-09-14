@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Panel de Usuario - Seguridad Informática{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <h1 style="font-size: 1.5rem; font-weight: 700;">Panel de Usuario</h1>
+      <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 0.25rem;">
+        Bienvenido, tu sesión se encuentra activa en Flask.
+      </p>
+    </div>
+    <a href="{{ url_for('auth.logout') }}" class="btn btn-danger">Cerrar Sesión</a>
+  </div>
+
+  <div style="background-color: #0b1120; border: 1px solid #334155; border-radius: 8px; padding: 1.5rem; margin-top: 1rem;">
+    <h2 style="font-size: 1rem; color: #38bdf8; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.05em;">
+      Información de la Sesión
+    </h2>
+    <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.75rem;">
+      <li><strong style="color: #94a3b8;">ID de Usuario:</strong> #{{ user.id }}</li>
+      <li><strong style="color: #94a3b8;">Correo Electrónico:</strong> {{ user.email }}</li>
+      <li>
+        <strong style="color: #94a3b8;">Rol asignado:</strong> 
+        <span class="badge badge-user">{{ user.rol }}</span>
+      </li>
+      <li><strong style="color: #94a3b8;">Tipo de Autenticación:</strong> Sesión segura de Flask (Cookie HttpOnly y SameSite=Lax)</li>
+    </ul>
+  </div>
+
+  <div style="margin-top: 2rem; padding: 1rem; border-left: 4px solid #3b82f6; background-color: rgba(59, 130, 246, 0.1); border-radius: 4px;">
+    <h3 style="font-size: 0.95rem; font-weight: 600; color: #60a5fa;">Demostración de Control de Acceso (RBAC)</h3>
+    <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 0.25rem;">
+      Tu cuenta tiene rol <strong>{{ user.rol }}</strong>. Si intentas ingresar manualmente a la ruta de administrador (<code>/admin/dashboard</code>), el sistema evaluará el decorador <code>@admin_required</code> y rechazará tu petición si no tienes dicho rol.
+    </p>
+  </div>
+</div>
+{% endblock %}

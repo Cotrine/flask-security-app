@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Seguridad Informática{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header class="navbar">
+    <a href="{{ url_for('main.index') }}" class="nav-brand">
+      🔒 Seguridad Informática
+    </a>
+    <nav class="nav-links">
+      {% if session.get('user_id') %}
+        <span style="color: #94a3b8; font-size: 0.9rem;">
+          {{ session.get('user_email') }}
+          {% if session.get('user_rol') == 'administrador' %}
+            <span class="badge badge-admin">Admin</span>
+          {% else %}
+            <span class="badge badge-user">Usuario</span>
+          {% endif %}
+        </span>
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary">Dashboard</a>
+        {% if session.get('user_rol') == 'administrador' %}
+          <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary" style="border-color: #ef4444; color: #f87171;">Panel Admin</a>
+        {% endif %}
+        <a href="{{ url_for('auth.logout') }}" class="btn btn-danger">Cerrar Sesión</a>
+      {% else %}
+        <a href="{{ url_for('auth.login') }}" class="btn btn-secondary">Iniciar Sesión</a>
+        <a href="{{ url_for('auth.register') }}" class="btn btn-primary" style="width: auto;">Registrarse</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <main class="container">
+    {# Mensajes Flash #}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <p>Proyecto de Seguridad Informática &bull; <strong>Flask + PostgreSQL Puro (sin SQLAlchemy)</strong></p>
+    <p style="margin-top: 0.25rem;">Protección CSRF, Bcrypt Hashing, RBAC y Consultas Parametrizadas.</p>
+  </footer>
+</body>
+</html>

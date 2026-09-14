@@ -1,0 +1,28 @@
+[Unit]
+Description=Gunicorn daemon para servir el Proyecto de Seguridad Informática (Flask)
+After=network.target
+
+[Service]
+# Usuario del sistema en AWS EC2 (típicamente 'ubuntu')
+User=ubuntu
+Group=www-data
+
+# Directorio donde se clonó el repositorio en EC2
+WorkingDirectory=/home/ubuntu/flask-security-app
+
+# Ruta al ejecutable de gunicorn dentro del entorno virtual
+Environment="PATH=/home/ubuntu/flask-security-app/venv/bin"
+
+# Comando de ejecución con socket unix local
+ExecStart=/home/ubuntu/flask-security-app/venv/bin/gunicorn \
+          --workers 3 \
+          --bind unix:/home/ubuntu/flask-security-app/app.sock \
+          -m 007 \
+          run:app
+
+# Reinicio automático en caso de fallo
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

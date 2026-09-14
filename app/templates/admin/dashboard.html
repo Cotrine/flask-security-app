@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Panel de Administrador - Exclusivo{% endblock %}
+
+{% block content %}
+<div class="card" style="border-top: 4px solid #ef4444;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <h1 style="font-size: 1.5rem; font-weight: 700;">Panel Exclusivo de Administrador</h1>
+        <span class="badge badge-admin">Acceso Restringido</span>
+      </div>
+      <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 0.25rem;">
+        Esta ruta está protegida por el decorador <code>@admin_required</code>. Solo los usuarios con rol 'administrador' pueden ver este contenido.
+      </p>
+    </div>
+    <a href="{{ url_for('auth.logout') }}" class="btn btn-danger">Cerrar Sesión</a>
+  </div>
+
+  <div style="margin-top: 1.5rem;">
+    <h2 style="font-size: 1.1rem; color: #fff; margin-bottom: 0.75rem;">
+      Auditoría de Usuarios en la Base de Datos (PostgreSQL)
+    </h2>
+    <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 1rem;">
+      Consulta generada directamente con <code>psycopg2</code> sin ORM para inspeccionar usuarios y verificar roles:
+    </p>
+
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th>Fecha de Registro</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in users %}
+            <tr>
+              <td style="font-family: monospace; color: #94a3b8;">#{{ u.id }}</td>
+              <td style="font-weight: 500;">{{ u.email }}</td>
+              <td>
+                {% if u.rol == 'administrador' %}
+                  <span class="badge badge-admin">Administrador</span>
+                {% else %}
+                  <span class="badge badge-user">Usuario</span>
+                {% endif %}
+              </td>
+              <td style="font-size: 0.85rem; color: #94a3b8;">{{ u.fecha_registro.strftime('%Y-%m-%d %H:%M:%S') if u.fecha_registro else 'N/A' }}</td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="4" style="text-align: center; color: #64748b; padding: 2rem;">No hay usuarios registrados.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
